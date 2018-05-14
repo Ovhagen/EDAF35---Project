@@ -6,7 +6,7 @@ LDFLAGS		= -g
 
 OUT		= list_malloc
 
-OBJS		= list_malloc.o
+OBJS		= list_malloc.o list.o
 
 main: $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $(OUT)

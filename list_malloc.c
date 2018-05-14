@@ -1,22 +1,32 @@
 #include <unistd.h>
+#include "list.h"
 
 
-#define SBRK_FAILED ((void *)-1)
 
 void* list_malloc(size_t size){
   printf("Linked list malloc called with size: %d\n", size);
-  void* prev_break = sbrk(0);
+  printf("Program starts here %d\n", sbrk(0));
+
   /*Increment the program break point to allocate memory*/
-  void* startaddress = sbrk(size);
+  void* startaddress = sbrk(size); //startaddress = sbrk(0)
 
   if(startaddress == SBRK_FAILED){
     printf("Failed to increment break point. Closing.");
     return NULL; //Returns NULL for caller to handle
   }
 
-  printf("Previous start: %d\n", prev_break);
-  printf("The program starts here: %d\n", startaddress);
+  /*Call new_list() and get a node to start of list*/
+  block_t* list = new_list(size, startaddress); //This should be some kind of global variable?
+
+  if(list == NULL){
+    return NULL;
+  }
+
 }
+
+
+
+
 
 
 int main(){
