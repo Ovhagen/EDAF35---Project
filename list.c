@@ -9,29 +9,43 @@ block_t* new_list(size_t size, void* addr){
   startBlock = sbrk(sizeof(startBlock));
   printf("Initialized start block %d\n", startBlock);
   printf("program start %d\n", sbrk(0));
-  if(startBlock == SBRK_FAILED){
-    printf("Failed to increment break point. Closing.");
-    return NULL; //Returns NULL for caller to handle
-  }
 
-  startBlock->blockID = 0;
-  startBlock->used = 0;
-  startBlock->head = NULL;
-  startBlock->size = size;
-  startBlock->data = addr;
-  startBlock->tail = NULL;
 
   return startBlock;
 }
 
-void* search_free_block(size_t size){
+block_t* search_free_block(block_t* first, size_t data_size){
+  block_t* p = first;
+
+  while(p->tail != NULL){
+    if(p->size < MIN_ALLOC_SIZE){
+      return p;
+    }
+    p = p->tail;
+  }
+  return NULL;
+}
+
+void list_append(block_t* new_block, block_t* block){
+  if(block == NULL){
+    /*Adding first block*/
+    printf("here2\n");
+    new_block->head = NULL;
+    new_block->tail = NULL;
+    block = new_block;
+    return 0;
+  }
+
+  block->tail = new_block;
+  new_block->head = block;
+  new_block->tail = NULL;
+  printf("Adding block with start addr: %s", (char*)new_block->data);
+}
+
+void list_split_append(block_t* new_block, block_t* block){
 
 }
 
-void append(block_t** node1, block_t node2){
-
-}
-
-void delete_node(block_t* node){
-
+void list_delete(block_t* block){
+  /*Check against the address and free memory*/
 }

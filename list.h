@@ -1,7 +1,7 @@
 #ifndef sh_list
 #define sh_list
 
-#define SBRK_FAILED ((void *)-1)
+#include <stddef.h>
 
 typedef struct block block_t;
 
@@ -10,7 +10,6 @@ typedef struct block block_t;
  *The data is stored from the stored starting address in the block.
  */
 typedef struct block{
-  int blockID;
   size_t size;
   short used;
   block_t* head;
@@ -18,10 +17,15 @@ typedef struct block{
   void *data
 };
 
+#define BLOCK_INFO_SIZE offsetof(block_t, data)
+#define MAX_BLOCK_SIZE 64  //maximum data => 56
+#define MIN_ALLOC_SIZE 16 //minimum data => 8
+
 block_t* new_list(size_t size, void* addr);
-void* search_free_block(size_t size);
-void append(block_t** block1, block_t nblock2);
-void delete_node(block_t* block);
+block_t* search_free_block(block_t* first, size_t size);
+void list_append(block_t* new_block, block_t* block);
+void list_split_append(block_t* new_block, block_t* block);
+void list_delete(block_t* block);
 
 
 #endif
