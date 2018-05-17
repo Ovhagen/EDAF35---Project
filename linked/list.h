@@ -11,10 +11,10 @@ typedef struct block block_t;
  */
 typedef struct block{
   size_t size;
-  short used;
+  bool used;
   block_t* head;
   block_t* tail;
-  void *data
+  void *data;
 };
 
 #define BLOCK_INFO_SIZE offsetof(block_t, data)

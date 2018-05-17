@@ -1,10 +1,10 @@
 #include <unistd.h>
-#include "malloc.h"
+#include <stdio.h>
+#include "alloc.h"
 #include "list.h"
 
 #define SBRK_FAILED ((void *)-1)
 #define ALLOC_LIMIT 2048
-#define malloc(size) my_malloc(size);
 
 static short total_alloc = 0;
 static block_t* first = NULL;
@@ -68,15 +68,15 @@ void* my_malloc(size_t size){
 }
 
 void* calloc(size_t nitems, size_t size){
-  int bytes = nitems*size;
-
-  void* ptr = sbrk(bytes);
-
-  if(ptr < 0){
-    return NULL;
-  } else {
-    return ptr;
-  }
+  // int bytes = nitems*size;
+  //
+  // void* ptr = sbrk(bytes);
+  //
+  // if(ptr < 0){
+  //   return NULL;
+  // } else {
+  //   return ptr;
+  // }
 }
 
 void* realloc(void* ptr, size_t size){}
