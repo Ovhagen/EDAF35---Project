@@ -67,8 +67,8 @@ void* my_malloc(size_t size){
 
 }
 
-void* calloc(size_t type, size_t size){
-  int bytes = size*type;
+void* calloc(size_t nitems, size_t size){
+  int bytes = nitems*size;
 
   void* ptr = sbrk(bytes);
 
