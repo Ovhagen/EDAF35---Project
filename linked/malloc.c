@@ -67,6 +67,18 @@ void* my_malloc(size_t size){
 
 }
 
+void* calloc(size_t type, size_t size){
+  int bytes = size*type;
+
+  void* ptr = sbrk(bytes);
+
+  if(ptr < 0){
+    return NULL;
+  } else {
+    return ptr;
+  }
+}
+
 
 int main(){
   int size = 1*sizeof(int);
