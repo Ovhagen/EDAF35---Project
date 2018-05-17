@@ -29,7 +29,6 @@ block_t* search_free_block(block_t* first, size_t data_size){
 void list_append(block_t* new_block, block_t* block){
   if(block == NULL){
     /*Adding first block*/
-    printf("here2\n");
     new_block->head = NULL;
     new_block->tail = NULL;
     block = new_block;
@@ -46,6 +45,9 @@ void list_split_append(block_t* new_block, block_t* block){
 
 }
 
-void list_delete(block_t* block){
+void list_delete(void* addr){
   /*Check against the address and free memory*/
+}
+
+void printList(){
 }

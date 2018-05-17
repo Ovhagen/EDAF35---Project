@@ -1,8 +1,10 @@
 #include <unistd.h>
+#include "malloc.h"
 #include "list.h"
 
 #define SBRK_FAILED ((void *)-1)
 #define ALLOC_LIMIT 2048
+#define malloc(size) my_malloc(size);
 
 static short total_alloc = 0;
 static block_t* first = NULL;
@@ -30,7 +32,7 @@ void* heap_alloc(size_t size){
 }
 
 
-void* list_malloc(size_t size){
+void* my_malloc(size_t size){
   printf("Linked list malloc called with size: %d\n", size);
   printf("Program starts here %d\n", sbrk(0));
 
@@ -39,7 +41,6 @@ void* list_malloc(size_t size){
   if(first == NULL){
     new_block.size = size;
     new_block.used = 1;
-    printf("here\n");
     size_t alloc_size = min(BLOCK_INFO_SIZE + size, MIN_ALLOC_SIZE);
     printf("%d\n", alloc_size);
     void* data_addr = heap_alloc(alloc_size);
@@ -53,23 +54,23 @@ void* list_malloc(size_t size){
   }
 
   /*Search for free space for new allocation*/
-  block_t* free_block = NULL;
-
-  if(free_block != NULL){
-    /*See the block*/
-    if(free_block->size >= MIN_ALLOC_SIZE){
-
-    }
-  }else{
-    /*We didn't find a new block and need to allocate a new one*/
-  }
+  // block_t* free_block = NULL;
+  //
+  // if(free_block != NULL){
+  //   /*See the block*/
+  //   if(free_block->size >= MIN_ALLOC_SIZE){
+  //
+  //   }
+  // }else{
+  //   /*We didn't find a new block and need to allocate a new one*/
+  // }
 
 }
 
 
 int main(){
   int size = 1*sizeof(int);
-  int* p1 = list_malloc(size);
+  int* p1 = malloc(size);
   if(p1){
     printf("Houston we have a pointer.\n");
     /*for(int n=0; n<4; ++n) // populate the array

@@ -1,5 +1,5 @@
-#ifndef sh_list
-#define sh_list
+#ifndef LINKED_H
+#define LINKED_H
 
 #include <stddef.h>
 
@@ -25,7 +25,8 @@ block_t* new_list(size_t size, void* addr);
 block_t* search_free_block(block_t* first, size_t size);
 void list_append(block_t* new_block, block_t* block);
 void list_split_append(block_t* new_block, block_t* block);
-void list_delete(block_t* block);
+void list_delete(void* addr);
+void printList();
 
 
 #endif
