@@ -3,15 +3,15 @@
 
 #include <stddef.h>
 
-typedef struct block block_t;
+typedef struct block_t block_t;
 
 /*A block contains some info about the specific block.
  *Also it refers to adjacent blocks keeping data.
  *The data is stored from the stored starting address in the block.
  */
-typedef struct block{
+typedef struct block_t{
   size_t size;
-  bool used;
+  short used;
   block_t* head;
   block_t* tail;
   void *data;
@@ -25,8 +25,8 @@ block_t* new_list(size_t size, void* addr);
 block_t* search_free_block(block_t* first, size_t size);
 void list_append(block_t* new_block, block_t* block);
 void list_split_append(block_t* new_block, block_t* block);
-void list_delete(void* addr);
-void printList();
+void list_delete(void* addr, block_t* first);
+void printList(block_t* first);
 
 
 #endif

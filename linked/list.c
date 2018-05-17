@@ -17,7 +17,7 @@ block_t* new_list(size_t size, void* addr){
 block_t* search_free_block(block_t* first, size_t data_size){
   block_t* p = first;
 
-  while(p->tail != NULL){
+  while(p != NULL){
     if(p->size < MIN_ALLOC_SIZE){
       return p;
     }
@@ -27,27 +27,30 @@ block_t* search_free_block(block_t* first, size_t data_size){
 }
 
 void list_append(block_t* new_block, block_t* block){
-  if(block == NULL){
-    /*Adding first block*/
-    new_block->head = NULL;
-    new_block->tail = NULL;
-    block = new_block;
-    return 0;
-  }
-
   block->tail = new_block;
   new_block->head = block;
   new_block->tail = NULL;
-  printf("Adding block with start addr: %s", (char*)new_block->data);
 }
 
 void list_split_append(block_t* new_block, block_t* block){
 
 }
 
-void list_delete(void* addr){
+void list_delete(void* addr, block_t* first){
+  block_t* p = first;
   /*Check against the address and free memory*/
+  while(p->tail != NULL){
+    p = p->tail;
+  }
 }
 
-void printList(){
+void printList(block_t* ptr){
+  int i = 0;
+  printf("%d\n", ptr->data);
+  while(ptr != NULL){
+    printf("|Block: %d Size: %d Addr: %d|  ->  ", i, ptr->size, ptr->data);
+    ptr = ptr->tail;
+    i += 1;
+  }
+  printf("\n\n");
 }
