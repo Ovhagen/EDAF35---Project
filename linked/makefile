@@ -4,13 +4,14 @@ CFLAGS		= -g -Wall -pedantic
 
 LDFLAGS		= -g
 
-OUT		= malloc
+OUT		= test
 
-OBJS		= malloc.o list.o
+OBJS		= test.o alloc.o list.o
 
 main: $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $(OUT)
-	./malloc
+	./test
 
 clean:
 	rm -f *.o sh core out
+	rm -f test
