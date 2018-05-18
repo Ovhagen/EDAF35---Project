@@ -18,14 +18,13 @@ typedef struct block_t{
 };
 
 #define BLOCK_INFO_SIZE offsetof(block_t, data)
-#define MAX_BLOCK_SIZE 64  //maximum data => 56
-#define MIN_ALLOC_SIZE 16 //minimum data => 8
+#define MIN_ALLOC_SIZE 16
 
-block_t* new_list(size_t size, void* addr);
 block_t* search_free_block(block_t* first, size_t size);
-void list_append(block_t* new_block, block_t* block);
-void list_split_append(block_t* new_block, block_t* block);
-void list_delete(void* addr, block_t* first);
+void list_append(block_t* new_block, block_t* first);
+short free_block(void* addr, block_t* first);
+block_t* fragment_block(block_t* block, size_t data_size);
+void merge_adjacent(block_t* first);
 void printList(block_t* first);
 
 

@@ -3,52 +3,85 @@
 #include <stdlib.h>
 #include "list.h"
 
-block_t* new_list(size_t size, void* addr){
-  block_t* startBlock;
-  printf("First block size: %d\n", sizeof(startBlock));
-  startBlock = sbrk(sizeof(startBlock));
-  printf("Initialized start block %d\n", startBlock);
-  printf("program start %d\n", sbrk(0));
-
-
-  return startBlock;
-}
-
-block_t* search_free_block(block_t* first, size_t data_size){
-  block_t* p = first;
-
-  while(p != NULL){
-    if(p->size < MIN_ALLOC_SIZE){
-      return p;
+block_t* search_free_block(block_t* block, size_t data_size){
+  while(block != NULL){
+    if(block->used == 0 && block->size >= data_size){
+      return block;
     }
-    p = p->tail;
+    block = block->tail;
   }
   return NULL;
 }
 
-void list_append(block_t* new_block, block_t* block){
-  block->tail = new_block;
-  new_block->head = block;
+
+void list_append(block_t* new_block, block_t* ptr){
+  while(ptr->tail != NULL){
+    ptr = ptr->tail;
+  }
+
+  ptr->tail = new_block;
+  new_block->head = ptr;
   new_block->tail = NULL;
 }
 
-void list_split_append(block_t* new_block, block_t* block){
 
+short free_block(void* addr, block_t* ptr){
+  /*Check against the address and mark as unused*/
+  while(ptr != NULL){
+    if((int)ptr->data == (int)addr){
+      ptr->used = 0;
+      return 1;
+    }
+    ptr = ptr->tail;
+  }
+  return 0;
 }
 
-void list_delete(void* addr, block_t* first){
-  block_t* p = first;
-  /*Check against the address and free memory*/
-  while(p->tail != NULL){
-    p = p->tail;
+
+block_t* fragment_block(block_t* block, size_t data_size){
+  /*Point the new block after allocated data*/
+  block_t* new_block = block->data + data_size;
+
+  /*Initialize the new unused block and put it in the list*/
+  new_block->used = 0;
+  new_block->data = (void*)new_block + BLOCK_INFO_SIZE; //void* for address increment
+  new_block->size = block->size - data_size - BLOCK_INFO_SIZE;
+  new_block->head = block;
+  new_block->tail = block->tail;
+  block->tail = new_block;
+}
+
+
+void merge_adjacent(block_t* ptr){
+  block_t* to_remove = NULL;
+  while(ptr != NULL){
+    if(ptr->used == 0){
+      if(ptr->tail != NULL && ptr->tail->used == 0){
+        to_remove = ptr->tail;
+        printf("Merging unallocated blocks\n");
+
+        /*Extend the first of the two blocks and empty the second empty block.*/
+        ptr->tail = to_remove->tail;
+        ptr->size += BLOCK_INFO_SIZE + to_remove->size;
+
+        to_remove->data = NULL;
+        to_remove->tail = NULL;
+        to_remove->head = NULL;
+        to_remove->size = 0;
+
+        merge_adjacent(ptr);
+      }
+    }
+    ptr = ptr->tail;
   }
 }
 
+
 void printList(block_t* ptr){
   int i = 0;
-  printf("%d\n", ptr->data);
+  printf("\n");
   while(ptr != NULL){
-    printf("|Block: %d Size: %d Addr: %d|  ->  ", i, ptr->size, ptr->data);
+    printf("|Block: %d Size: %d Addr: %d Used: %d|  ->  ", i, ptr->size, ptr->data, ptr->used);
     ptr = ptr->tail;
     i += 1;
   }
