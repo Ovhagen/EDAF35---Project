@@ -48,13 +48,13 @@ void* my_malloc(size_t size){
   printf("Program break point at %d\n", sbrk(0));
   printf("Memory allocated: %d\n", total_alloc);
   #endif
-
   /*Search for free space for new allocation*/
   block_t* free_block = search_free_block(first, size);
    if(free_block != NULL){
      printf("A free block was found.\n");
      /*Allocate on free space and split if possible*/
-     if(free_block->size - size > BLOCK_INFO_SIZE){
+     if((int)(free_block->size - size - BLOCK_INFO_SIZE) > (int)BLOCK_INFO_SIZE){
+       printf("Fragmenting block.\n");
        fragment_block(free_block, size);
        free_block->used = 1;
        free_block->size = size;
@@ -75,8 +75,11 @@ void* my_malloc(size_t size){
    if(new_block == NULL || new_block == SBRK_FAILED){
      return NULL; //Returns NULL for caller to handle
    }
-
    /*Allocate for perfect fit and set used*/
+   if(first != NULL){
+     printf("%d\n", &first->data);
+     printf("%d\n", &new_block->size);
+   }
    new_block->size = size;
    new_block->used = 1;
 
@@ -103,7 +106,6 @@ void* my_malloc(size_t size){
    /*Check if list is initialized, if not initialize it with new block.*/
    if(first == NULL){
      new_block->tail = NULL;
-     new_block->head = NULL;
      first = new_block;
 
      #if LIST_DEBUG

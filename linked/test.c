@@ -5,9 +5,9 @@
 
 int main(){
   int size = 1*sizeof(int);
-  int p1 = malloc(100);
+  int p1 = malloc(1);
   free(p1);
-  p1 = malloc(36);
+  p1 = malloc(1);
   // int* p2 = malloc(size);
   // int* p3 = malloc(size);
   //

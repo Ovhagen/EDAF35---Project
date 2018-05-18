@@ -20,7 +20,6 @@ void list_append(block_t* new_block, block_t* ptr){
   }
 
   ptr->tail = new_block;
-  new_block->head = ptr;
   new_block->tail = NULL;
 }
 
@@ -41,12 +40,10 @@ short free_block(void* addr, block_t* ptr){
 block_t* fragment_block(block_t* block, size_t data_size){
   /*Point the new block after allocated data*/
   block_t* new_block = block->data + data_size;
-
   /*Initialize the new unused block and put it in the list*/
   new_block->used = 0;
   new_block->data = (void*)new_block + BLOCK_INFO_SIZE; //void* for address increment
   new_block->size = block->size - data_size - BLOCK_INFO_SIZE;
-  new_block->head = block;
   new_block->tail = block->tail;
   block->tail = new_block;
 }
@@ -55,8 +52,7 @@ block_t* fragment_block(block_t* block, size_t data_size){
 void merge_adjacent(block_t* ptr){
   block_t* to_remove = NULL;
   while(ptr != NULL){
-    if(ptr->used == 0){
-      if(ptr->tail != NULL && ptr->tail->used == 0){
+      if(ptr->used == 0 && ptr->tail != NULL && ptr->tail->used == 0){
         to_remove = ptr->tail;
         printf("Merging unallocated blocks\n");
 
@@ -66,13 +62,10 @@ void merge_adjacent(block_t* ptr){
 
         to_remove->data = NULL;
         to_remove->tail = NULL;
-        to_remove->head = NULL;
         to_remove->size = 0;
-
-        merge_adjacent(ptr);
+      }else{
+        ptr = ptr->tail;
       }
-    }
-    ptr = ptr->tail;
   }
 }
 

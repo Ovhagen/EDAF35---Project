@@ -10,9 +10,8 @@ typedef struct block_t block_t;
  *The data is stored from the stored starting address in the block.
  */
 typedef struct block_t{
-  size_t size;
+  int size;
   short used;
-  block_t* head;
   block_t* tail;
   void *data;
 };
