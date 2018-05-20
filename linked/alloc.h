@@ -1,5 +1,7 @@
 #ifndef ALLOC_H
 #define ALLOC_H
+#include <unistd.h>
+
 
 /*Override alloc functions in C*/
 #define malloc(size) my_malloc(size)
@@ -7,7 +9,6 @@
 #define realloc(ptr, size) realloc(ptr, size)
 #define free(ptr) free(ptr)
 
-#include <unistd.h>
 
 void* heap_alloc(size_t size);
 

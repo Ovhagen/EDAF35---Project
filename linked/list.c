@@ -3,6 +3,14 @@
 #include <stdlib.h>
 #include "list.h"
 
+size_t align_size(size_t size){
+  unsigned size_offset;
+
+  size_offset = size % sizeof(size_t);
+
+  return size_offset != 0 ? (size + sizeof(size_t) - size_offset): size;
+}
+
 block_t* search_free_block(block_t* block, size_t data_size){
   while(block != NULL){
     if(block->used == 0 && block->size >= data_size){
@@ -25,9 +33,10 @@ void list_append(block_t* new_block, block_t* ptr){
 
 
 short free_block(void* addr, block_t* ptr){
-  /*Check against the address and mark as unused*/
+  /*Check against the address
+  * If match, mark as unused */
   while(ptr != NULL){
-    if((int)ptr->data == (int)addr){
+    if(&ptr->data == addr){
       ptr->used = 0;
       return 1;
     }
@@ -39,13 +48,16 @@ short free_block(void* addr, block_t* ptr){
 
 block_t* fragment_block(block_t* block, size_t data_size){
   /*Point the new block after allocated data*/
-  block_t* new_block = block->data + data_size;
+  block_t* new_block = (void*)&block->data + data_size;
   /*Initialize the new unused block and put it in the list*/
   new_block->used = 0;
   new_block->data = (void*)new_block + BLOCK_INFO_SIZE; //void* for address increment
   new_block->size = block->size - data_size - BLOCK_INFO_SIZE;
   new_block->tail = block->tail;
+
   block->tail = new_block;
+  block->used = 1;
+  block->size = data_size;
 }
 
 
@@ -54,7 +66,7 @@ void merge_adjacent(block_t* ptr){
   while(ptr != NULL){
       if(ptr->used == 0 && ptr->tail != NULL && ptr->tail->used == 0){
         to_remove = ptr->tail;
-        printf("Merging unallocated blocks\n");
+        //printf("Merging unallocated blocks\n");
 
         /*Extend the first of the two blocks and empty the second empty block.*/
         ptr->tail = to_remove->tail;
@@ -74,7 +86,7 @@ void printList(block_t* ptr){
   int i = 0;
   printf("\n");
   while(ptr != NULL){
-    printf("|Block: %d Size: %d Addr: %d Used: %d|  ->  ", i, ptr->size, ptr->data, ptr->used);
+    printf("|Block: %d Size: %d Addr: %d Used: %d|  ->  ", i, ptr->size, &ptr->data, ptr->used);
     ptr = ptr->tail;
     i += 1;
   }

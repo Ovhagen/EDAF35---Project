@@ -10,14 +10,16 @@ typedef struct block_t block_t;
  *The data is stored from the stored starting address in the block.
  */
 typedef struct block_t{
-  int size;
-  short used;
-  block_t* tail;
-  void *data;
+  short used; /*2 bytes*/
+  block_t* tail; /*8 bytes*/
+  size_t size;   /*8 bytes*/
+  void* data; /*8 bytes*/
 };
 
 #define BLOCK_INFO_SIZE offsetof(block_t, data)
-#define MIN_ALLOC_SIZE 16
+#define BLOCK_T_SIZE sizeof(block_t)
+
+size_t align_size(size_t size);
 
 block_t* search_free_block(block_t* first, size_t size);
 void list_append(block_t* new_block, block_t* first);
