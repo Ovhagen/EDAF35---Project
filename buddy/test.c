@@ -5,10 +5,10 @@
 void malloc_test(){
   int* p1 = malloc(100);
   assert(p1 != NULL);
-  // *p1 = 20000;
-  // assert(*p1 == 20000);
-  // int* p2 = malloc(100);
-  // assert(p2 == (void*)p1 + 104 + 24);
+  *p1 = 20000;
+  assert(*p1 == 20000);
+  int* p2 = malloc(100);
+  //assert(p2 == (void*)p1 + 104 + 24);
   // int* p3 = malloc(100);
   // assert(p3 == (void*)p1 + 104*2 + 24*2);
   //
