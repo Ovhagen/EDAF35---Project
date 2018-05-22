@@ -5,35 +5,22 @@
 void malloc_test(){
   int* p1 = malloc(100);
   assert(p1 != NULL);
-  *p1 = 20000;
+  *p1 = 20000; //Write some data
   assert(*p1 == 20000);
   int* p2 = malloc(100);
-  //assert(p2 == (void*)p1 + 104 + 24);
-  // int* p3 = malloc(100);
-  // assert(p3 == (void*)p1 + 104*2 + 24*2);
-  //
-  // void* old_start_addr = p1;
-  //
-  // free(p3);
-  // free(p2);
-  // free(p1);
-  //
-  // int size = 1*sizeof(int);
-  // p1 = malloc(size); //Fragments block on same start address
-  // assert(p1 == old_start_addr);
-  // p2 = malloc(20); //fragments block
-  // printf("%zu", (void*)p1 );
-  // assert(p2 == (void*)p1 + size + 4 + 24);  //plus 4 for size alignment
-  // p3 = malloc(50);
-  // assert(p3 == (void*)p1 + size + 4 + 24 + 24*2); //24 for size alignment
-  //
-  // free(p3);
-  // free(p2); //Merge should happen here
-  //
-  // p3 = malloc(5);
-  // assert(p3 == old_start_addr + 8 + 24); //p1 is still allocated
-  // p2 = malloc(200);
-  // int* p4 = malloc(48); // perfect in last empty block
+  printf("%zu %zu\n", (void*)p1, (void*)p2);
+  assert(p1 == (void*)p2 + 128  - 8); //-8 for pointer size
+  int* p3 = malloc(100);
+  int* p4 = malloc(100);
+  int* p5 = malloc(100);
+  int* p6 = malloc(100);
+  int* p7 = malloc(100);
+  int* p8 = malloc(100); //After this allocation the whole tree of 1024 bytes is filled.
+  int* p9 = malloc(100);
+  assert(p9 == NULL); //Make sure we can't overallocate.
+
+  free(p1);
+
 }
 
 void calloc_test(){
@@ -82,7 +69,7 @@ void realloc_test(){
 }
 
 int main(){
-  malloc_test();
+  malloc_test(); //Test for 1024 bytes memory
   //calloc_test();
   //realloc_test();
 
